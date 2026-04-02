@@ -62,7 +62,7 @@ const Contact = () => {
       });
 
       // 2. Submit to new local backend (primary for Admin Portal)
-      const localBackendLink = fetch('http://localhost:5000/api/queries', {
+      const localBackendLink = fetch(`${process.env.REACT_APP_BACKEND_URL}/api/queries`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

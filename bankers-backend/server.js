@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -5,11 +6,30 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 const DB_FILE = path.join(__dirname, 'db.json');
 const QUERIES_DB_FILE = path.join(__dirname, 'db_queries.json');
 
-app.use(cors());
+// CORS: Allow production frontend, admin portal, and localhost dev servers
+const allowedOrigins = [
+  'https://next-bankers.vercel.app',      // production frontend
+  'https://next-bankers-admin.vercel.app', // production admin portal
+  'http://localhost:3000',                 // local frontend dev
+  'http://localhost:3001',                 // local admin dev
+];
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (e.g. mobile apps, curl, Postman)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS: ' + origin));
+    }
+  },
+  methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -126,5 +146,5 @@ app.patch('/api/queries/:id', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

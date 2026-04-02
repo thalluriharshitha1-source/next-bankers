@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwZd5t4pa-NPmmxhwy_qp8xeW904YrVSqOJ30N_nPQeii5Ho5Md2TurGpV_PX_pufaj/exec';
-const BACKEND_URL = 'http://localhost:5000/api/applications';
+const BACKEND_URL = `${process.env.REACT_APP_BACKEND_URL}/api/applications`; // env: https://next-bankers.onrender.com
 
 const ApplyNow = () => {
   const location = useLocation();
