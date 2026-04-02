@@ -1,0 +1,92 @@
+[
+  {
+    "id": "APP-10",
+    "name": "Ammulu",
+    "phone": "9922456721",
+    "loanType": "Personal Loan",
+    "amount": "300000",
+    "status": "Pending",
+    "date": "2026-03-31"
+  },
+  {
+    "id": "APP-9",
+    "name": "Shravani",
+    "phone": "7981234568",
+    "loanType": "Mortgage Loan",
+    "amount": "200000",
+    "status": "Under Process",
+    "date": "2026-03-31"
+  },
+  {
+    "id": "APP-8",
+    "name": "Harika",
+    "phone": "9376899921",
+    "loanType": "Personal Loan",
+    "amount": "200000",
+    "status": "Pending",
+    "date": "2026-03-31"
+  },
+  {
+    "id": "APP-7",
+    "name": "Ravinder",
+    "phone": "9934562166",
+    "loanType": "Business Loan",
+    "amount": "300000",
+    "status": "Approved",
+    "date": "2026-03-31"
+  },
+  {
+    "id": "APP-6",
+    "name": "Kalpana",
+    "phone": "9898765473",
+    "loanType": "Home Loan",
+    "amount": "100000",
+    "status": "Approved",
+    "date": "2026-03-31"
+  },
+  {
+    "id": "APP-5",
+    "name": "raghu",
+    "phone": "8977654362",
+    "loanType": "Mortgage Loan",
+    "amount": "100000",
+    "status": "Rejected",
+    "date": "2026-03-31"
+  },
+  {
+    "id": "APP-4",
+    "name": "lakshmi narayana",
+    "phone": "9934567823",
+    "loanType": "Home Loan",
+    "amount": "200000",
+    "status": "Under Process",
+    "date": "2026-03-31"
+  },
+  {
+    "id": "APP-3",
+    "name": "sudheer",
+    "phone": "9966472373",
+    "loanType": "Business Loan",
+    "amount": "500000",
+    "status": "Approved",
+    "date": "2026-03-31"
+  },
+  {
+    "id": "APP-2",
+    "name": "Harshitha",
+    "phone": "3456789012",
+    "loanType": "Education Loan",
+    "amount": "100000",
+    "status": "Disbursed",
+    "date": "2026-03-31"
+  },
+  {
+    "id": "APP-1",
+    "name": "Agent ",
+    "phone": "9876543210",
+    "loanType": "Personal Loan",
+    "amount": "500000",
+    "status": "Rejected",
+    "date": "2026-03-31"
+  }
+]

@@ -1,0 +1,29 @@
+[
+  {
+    "id": "QRY-3",
+    "name": "Lakshmi",
+    "email": "lak1234@gmail.com",
+    "phone": "9876892563",
+    "message": "I want loan from your bank. Would you please explain the process to get loan?",
+    "status": "Unread",
+    "date": "2026-04-01"
+  },
+  {
+    "id": "QRY-2",
+    "name": "Harshitha",
+    "email": "harshitha@gmail.com",
+    "phone": "9923456781",
+    "message": "I have not received my loan amount.Please check the status of process.",
+    "status": "Resolved",
+    "date": "2026-04-01"
+  },
+  {
+    "id": "QRY-1",
+    "name": "Raghu",
+    "email": "raghu123@gmail.com",
+    "phone": "99234567891",
+    "message": "I have doudt about my loan.Will you please explain me about that?",
+    "status": "In Progress",
+    "date": "2026-04-01"
+  }
+]
