@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
-import Applications from './pages/Applications';
+import Applications from './pages/applications';
 import Queries from './pages/queries';
-import Settings from './pages/Settings';
-import Login from './pages/Login';
+import Settings from './pages/settings';
+import Login from './pages/login';
 import './App.css';
 
 // Protected Route Component
@@ -20,7 +20,6 @@ function App() {
   );
 
   useEffect(() => {
-    // Listen for storage changes (e.g. login/logout)
     const handleStorageChange = () => {
       setIsAuthenticated(localStorage.getItem('isAdminAuthenticated') === 'true');
     };

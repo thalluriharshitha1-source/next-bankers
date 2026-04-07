@@ -1,5 +1,23 @@
 [
   {
+    "id": "APP-1775555195628",
+    "name": "sudheer",
+    "phone": "9988776622",
+    "loanType": "Car Loan",
+    "amount": "500000",
+    "status": "Pending",
+    "date": "2026-04-07"
+  },
+  {
+    "id": "APP-1775547511671",
+    "name": "John Doe",
+    "phone": "9768753241",
+    "loanType": "Business Loan",
+    "amount": "200000",
+    "status": "Pending",
+    "date": "2026-04-07"
+  },
+  {
     "id": "APP-10",
     "name": "Ammulu",
     "phone": "9922456721",

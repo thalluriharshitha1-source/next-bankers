@@ -1,107 +1,141 @@
 import React from 'react';
-import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
-import {
-  LayoutDashboard,
-  FileText,
-  Users,
-  Settings,
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { 
+  LayoutDashboard, 
+  FileText, 
+  MessageSquare, 
+  Settings, 
   LogOut,
-  Bell,
-  Search,
-  Banknote,
-  MessageSquare
+  ChevronRight
 } from 'lucide-react';
 
 const Layout = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-
-  const getPageTitle = () => {
-    switch(location.pathname) {
-      case '/applications': return 'Applications';
-      case '/queries': return 'Queries';
-      case '/settings': return 'Settings';
-      default: return 'Dashboard';
-    }
-  };
 
   const handleLogout = () => {
     localStorage.removeItem('isAdminAuthenticated');
     navigate('/login');
   };
+
+  const navItems = [
+    { name: 'Dashboard', path: '/', icon: <LayoutDashboard size={20} /> },
+    { name: 'Applications', path: '/applications', icon: <FileText size={20} /> },
+    { name: 'Queries', path: '/queries', icon: <MessageSquare size={20} /> },
+    { name: 'Settings', path: '/settings', icon: <Settings size={20} /> },
+  ];
+
   return (
-    <div className="admin-container">
-      {/* Sidebar */}
+    <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg-main)' }}>
+      {/* Sidebar - Sleeker Fixed Width */}
       <aside className="sidebar">
-        <div className="sidebar-header">
-          <Banknote size={32} color="#2563eb" />
-          <span>Bankers Admin</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '3rem', padding: '0 10px' }}>
+          <div style={{ 
+            width: '36px', 
+            height: '36px', 
+            background: 'linear-gradient(135deg, #2563eb, #7c3aed)', 
+            borderRadius: '10px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'white',
+            fontWeight: 'bold',
+            boxShadow: '0 4px 12px rgba(37, 99, 235, 0.2)'
+          }}>
+            B
+          </div>
+          <h1 style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--text-main)', margin: 0, letterSpacing: '-0.5px' }}>
+            Next <span style={{ color: 'var(--primary)' }}>Bankers</span>
+          </h1>
         </div>
 
-        <nav className="sidebar-nav">
-          <NavLink to="/" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} end>
-            <LayoutDashboard size={20} />
-            <span>Dashboard</span>
-          </NavLink>
-
-          <NavLink to="/applications" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
-            <FileText size={20} />
-            <span>Applications</span>
-          </NavLink>
-
-          <NavLink to="/queries" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
-            <MessageSquare size={20} />
-            <span>Queries</span>
-          </NavLink>
-          <NavLink to="/settings" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
-            <Settings size={20} />
-            <span>Settings</span>
-          </NavLink>
+        <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', flex: 1 }}>
+          {navItems.map((item) => (
+            <NavLink 
+              key={item.path} 
+              to={item.path} 
+              className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flex: 1 }}>
+                {item.icon}
+                <span>{item.name}</span>
+              </div>
+              <ChevronRight size={14} className="chevron" />
+            </NavLink>
+          ))}
         </nav>
 
-        <div className="sidebar-footer" style={{ padding: '1.5rem', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
-          <button
-            className="nav-link"
+        <div style={{ marginTop: 'auto', paddingTop: '2rem', borderTop: '1px solid var(--border)' }}>
+          <button 
             onClick={handleLogout}
-            style={{ width: '100%', background: 'transparent', border: 'none', cursor: 'pointer', color: '#ef4444' }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem',
+              padding: '0.875rem 1.25rem',
+              color: '#ef4444',
+              background: 'none',
+              border: 'none',
+              borderRadius: '12px',
+              cursor: 'pointer',
+              fontWeight: '700',
+              width: '100%',
+              transition: 'all 0.2s ease',
+              fontSize: '0.9375rem'
+            }}
+            onMouseOver={(e) => e.currentTarget.style.background = '#fef2f2'}
+            onMouseOut={(e) => e.currentTarget.style.background = 'none'}
           >
             <LogOut size={20} />
-            <span style={{ fontWeight: '600' }}>Logout</span>
+            Sign Out
           </button>
         </div>
       </aside>
 
-      {/* Main Content */}
-      <main className="main-content">
-        <header className="header">
-          <div className="page-title" style={{ fontSize: '1.25rem', fontWeight: '700', color: '#1e293b' }}>
-            {getPageTitle()}
+      {/* Main Content Area - Full Width Optimization */}
+      <main className="main-content" style={{ display: 'flex', flexDirection: 'column' }}>
+        {/* Top Header Bar for Context Branding */}
+        <header style={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'flex-start', 
+          marginBottom: '2.5rem', 
+          width: '100%' 
+        }}>
+          <div>
+            <h2 style={{ fontSize: '1.75rem', fontWeight: '800', color: 'var(--text-main)', letterSpacing: '-0.75px', marginBottom: '4px' }}>
+              Dashboard Overview
+            </h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.925rem', fontWeight: '500' }}>
+              Welcome back, Admin. Here is what is happening today across the system.
+            </p>
           </div>
-
-          <div className="header-actions" style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-            <button style={{ position: 'relative', background: 'none', border: 'none', cursor: 'pointer' }}>
-              <Bell size={20} color="#64748b" />
-              <span style={{
-                position: 'absolute',
-                top: '-5px',
-                right: '-5px',
-                background: '#ef4444',
-                color: 'white',
-                fontSize: '10px',
-                padding: '2px 5px',
-                borderRadius: '10px'
-              }}>3</span>
-            </button>
-            <div className="user-profile" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: '#2563eb', color: 'white', display: 'flex', alignItems: 'center', justifySelf: 'center', justifyContent: 'center', fontWeight: '600' }}>
-                AD
-              </div>
-              <span style={{ fontSize: '0.875rem', fontWeight: '600' }}>Admin</span>
+          <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'center' }}>
+            <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column' }}>
+              <span style={{ fontWeight: '800', fontSize: '0.875rem', color: 'var(--text-main)' }}>Harshitha T.</span>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: '600' }}>Super Admin Portal</span>
+            </div>
+            <div style={{ 
+              width: '46px', 
+              height: '46px', 
+              borderRadius: '14px', 
+              background: 'white', 
+              border: '1px solid var(--border)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'var(--primary)',
+              fontWeight: '800',
+              boxShadow: 'var(--shadow-sm)',
+              fontSize: '1rem'
+            }}>
+              HT
             </div>
           </div>
         </header>
 
-        <Outlet />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem', flex: 1 }}>
+          <Outlet />
+        </div>
       </main>
     </div>
   );

@@ -1,246 +1,220 @@
 import React, { useState, useEffect } from 'react';
-import {
-    Search,
-    MoreVertical,
-    Download,
-    Eye,
-    RefreshCw,
-    Loader2,
-    AlertCircle,
-    MessageSquare
-} from 'lucide-react';
+import { MessageSquare, CheckCircle, Search, User, Phone, Mail, Loader2 } from 'lucide-react';
 
 const BACKEND_URL = 'http://localhost:5000/api/queries';
 
 const Queries = () => {
-    const [queries, setQueries] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [searchTerm, setSearchTerm] = useState('');
+  const [queries, setQueries] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState('All');
+  const [searchTerm, setSearchTerm] = useState('');
 
-    const fetchQueries = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            const response = await fetch(BACKEND_URL);
-            if (!response.ok) throw new Error('Failed to fetch data from backend');
+  const fetchQueries = async () => {
+    try {
+      const response = await fetch(BACKEND_URL);
+      if (response.ok) {
+        const data = await response.json();
+        setQueries(Array.isArray(data) ? data : []);
+      }
+    } catch (err) {
+      console.error("Fetch error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-            const data = await response.json();
+  useEffect(() => {
+    fetchQueries();
+  }, []);
 
-            if (Array.isArray(data)) {
-                setQueries(data);
-            } else {
-                throw new Error('Invalid data format received');
-            }
-        } catch (err) {
-            console.error("Fetch error:", err);
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
+  const updateStatus = async (id, status) => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status })
+      });
+      if (response.ok) {
         fetchQueries();
-    }, []);
+      }
+    } catch (err) {
+      console.error("Update error:", err);
+    }
+  };
 
-    const handleStatusUpdate = async (id, newStatus) => {
-        try {
-            const response = await fetch(`${BACKEND_URL}/${id}`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ status: newStatus }),
-            });
+  const filteredQueries = queries.filter(query => {
+    const matchesFilter = filter === 'All' || query.status === filter;
+    const matchesSearch = query.name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          query.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          query.phone?.includes(searchTerm);
+    return matchesFilter && matchesSearch;
+  });
 
-            if (!response.ok) throw new Error('Failed to update status');
-
-            // Update local state to reflect the change immediately
-            setQueries(prev => prev.map(q =>
-                q.id === id ? { ...q, status: newStatus } : q
-            ));
-        } catch (err) {
-            console.error("Update error:", err);
-            alert('Failed to update status. Please try again.');
-        }
-    };
-
-    const filteredQueries = queries.filter(q =>
-        (q.name && q.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (q.email && q.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (q.phone && q.phone.includes(searchTerm))
-    );
-
-    return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h2 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <MessageSquare size={24} color="#2563eb" />
-                    Contact Queries
-                </h2>
-                <div style={{ display: 'flex', gap: '10px' }}>
-                    <button
-                        onClick={fetchQueries}
-                        className="btn"
-                        style={{
-                            background: '#e2e8f0',
-                            color: '#1e293b',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            cursor: loading ? 'not-allowed' : 'pointer',
-                            opacity: loading ? 0.5 : 1
-                        }}
-                        disabled={loading}
-                    >
-                        <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
-                        Refresh
-                    </button>
-                    <button className="btn" style={{ background: '#e2e8f0', color: '#1e293b', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Download size={18} />
-                        Export
-                    </button>
-                </div>
-            </div>
-
-            {error && (
-                <div style={{
-                    background: '#fef2f2',
-                    border: '1px solid #fee2e2',
-                    color: '#b91c1c',
-                    padding: '1.5rem',
-                    borderRadius: '8px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '12px'
-                }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <AlertCircle size={20} />
-                        <strong style={{ fontSize: '1rem' }}>Connection Error: Backend Unavailable</strong>
-                    </div>
-                    <p style={{ margin: 0, fontSize: '0.875rem', lineHeight: '1.5' }}>
-                        The dedicated admin backend is not responding. Please ensure the server is running at
-                        <code>http://localhost:5000</code>.
-                    </p>
-                    <div style={{ display: 'flex', gap: '10px', marginTop: '5px' }}>
-                        <button
-                            onClick={fetchQueries}
-                            style={{ background: '#b91c1c', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.75rem', fontWeight: '600' }}
-                        >
-                            Retry Connection
-                        </button>
-                    </div>
-                </div>
-            )}
-
-            <div className="table-container">
-                <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                        <Search size={18} style={{ position: 'absolute', left: '10px', color: '#64748b' }} />
-                        <input
-                            type="text"
-                            placeholder="Filter queries..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            style={{
-                                padding: '8px 12px 8px 36px',
-                                borderRadius: '8px',
-                                border: '1px solid #e2e8f0',
-                                width: '300px',
-                                outline: 'none'
-                            }}
-                        />
-                    </div>
-                    <div style={{ color: '#64748b', fontSize: '0.875rem' }}>
-                        {loading ? 'Loading...' : `Showing ${filteredQueries.length} queries`}
-                    </div>
-                </div>
-
-                {loading ? (
-                    <div style={{ padding: '4rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-                        <Loader2 size={48} className="animate-spin" color="#2563eb" />
-                        <p style={{ color: '#64748b' }}>Fetching queries...</p>
-                    </div>
-                ) : (
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Sender Info</th>
-                                <th>Message</th>
-                                <th>Date</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredQueries.length > 0 ? filteredQueries.map((q) => (
-                                <tr key={q.id}>
-                                    <td style={{ fontWeight: '600' }}>{q.id}</td>
-                                    <td>
-                                        <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                            <span style={{ fontWeight: '600' }}>{q.name}</span>
-                                            <span style={{ fontSize: '0.75rem', color: '#64748b' }}>{q.email}</span>
-                                            <span style={{ fontSize: '0.75rem', color: '#64748b' }}>{q.phone}</span>
-                                        </div>
-                                    </td>
-                                    <td style={{ maxWidth: '300px' }}>
-                                        <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontSize: '0.875rem' }} title={q.message}>
-                                            {q.message || '-'}
-                                        </div>
-                                    </td>
-                                    <td>{q.date}</td>
-                                    <td>
-                                        <span className={`status-badge status-${(q.status || 'Unread').toLowerCase().replace(/\s+/g, '_')}`}>
-                                            {q.status || 'Unread'}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                            <button className="btn" style={{ padding: '6px', background: '#eff6ff', color: '#2563eb' }} title="View Full Message" onClick={() => alert(`Message from ${q.name}:\n\n${q.message}`)}>
-                                                <Eye size={16} />
-                                            </button>
-
-                                            <select
-                                                value={q.status || 'Unread'}
-                                                onChange={(e) => handleStatusUpdate(q.id, e.target.value)}
-                                                style={{
-                                                    padding: '6px 12px',
-                                                    borderRadius: '6px',
-                                                    border: '1px solid var(--border-color)',
-                                                    fontSize: '0.75rem',
-                                                    fontWeight: '600',
-                                                    background: 'white',
-                                                    cursor: 'pointer'
-                                                }}
-                                            >
-                                                <option value="Unread">Unread</option>
-                                                <option value="In Progress">In Progress</option>
-                                                <option value="Resolved">Resolved</option>
-                                                <option value="Archived">Archived</option>
-                                            </select>
-
-                                            <button className="btn" style={{ padding: '6px', background: 'transparent', color: '#64748b' }}>
-                                                <MoreVertical size={16} />
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            )) : (
-                                <tr>
-                                    <td colSpan="6" style={{ textAlign: 'center', padding: '2rem', color: '#64748b' }}>
-                                        No queries found.
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
-                )}
-
-            </div>
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h2 style={{ fontSize: '1.5rem', fontWeight: '800', color: 'var(--text-main)', letterSpacing: '-0.5px' }}>
+          Customer Queries
+        </h2>
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          <div style={{ position: 'relative' }}>
+            <Search size={18} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+            <input
+              type="text"
+              placeholder="Search by name or email..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{
+                background: 'white',
+                border: '1px solid var(--border)',
+                padding: '12px 14px 12px 42px',
+                borderRadius: '12px',
+                outline: 'none',
+                width: '320px',
+                fontSize: '0.9375rem',
+                boxShadow: 'var(--shadow-sm)'
+              }}
+            />
+          </div>
+          <select
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            style={{
+              background: 'white',
+              border: '1px solid var(--border)',
+              padding: '10px 16px',
+              borderRadius: '12px',
+              outline: 'none',
+              fontWeight: '600',
+              fontSize: '0.9375rem',
+              cursor: 'pointer',
+              boxShadow: 'var(--shadow-sm)'
+            }}
+          >
+            <option value="All">All Messages</option>
+            <option value="Unread">New Queries</option>
+            <option value="Read">Processed</option>
+          </select>
         </div>
-    );
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(450px, 1fr))', gap: '1.5rem' }}>
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '4rem', gridColumn: '1 / -1' }}>
+            <Loader2 size={32} className="animate-spin" style={{ color: 'var(--primary)' }} />
+          </div>
+        ) : filteredQueries.length > 0 ? (
+          filteredQueries.map((query) => (
+            <div key={query.id} className="stat-card" style={{ padding: '1.75rem', height: '100%', justifyContent: 'space-between' }}>
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
+                  <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    <div style={{ 
+                      width: '48px', 
+                      height: '48px', 
+                      borderRadius: '12px', 
+                      background: 'linear-gradient(135deg, #eff6ff, #dbeafe)', 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center',
+                      color: 'var(--primary)'
+                    }}>
+                      <User size={22} />
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: '800', color: 'var(--text-main)', fontSize: '1.0625rem' }}>{query.name}</div>
+                      <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', fontWeight: '600', marginTop: '2px' }}>
+                        ID: {query.id.substring(0, 8)}...
+                      </div>
+                    </div>
+                  </div>
+                  <div style={{ 
+                    padding: '6px 14px', 
+                    borderRadius: '20px', 
+                    fontSize: '0.75rem', 
+                    fontWeight: '800', 
+                    textTransform: 'uppercase',
+                    background: query.status === 'Read' ? '#f0fdf4' : '#fff7ed', 
+                    color: query.status === 'Read' ? '#10b981' : '#f59e0b',
+                    border: `1px solid ${query.status === 'Read' ? '#dcfce7' : '#ffedd5'}`
+                  }}>
+                    {query.status || 'Unread'}
+                  </div>
+                </div>
+                
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
+                  <div style={{ padding: '12px', background: '#f8fafc', borderRadius: '10px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-muted)', fontSize: '0.7rem', fontWeight: '800', marginBottom: '4px' }}>
+                      <Mail size={12} /> EMAIL
+                    </div>
+                    <div style={{ fontWeight: '700', fontSize: '0.875rem', color: 'var(--text-main)', overflow: 'hidden', textOverflow: 'ellipsis' }}>{query.email}</div>
+                  </div>
+                  <div style={{ padding: '12px', background: '#f8fafc', borderRadius: '10px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-muted)', fontSize: '0.7rem', fontWeight: '800', marginBottom: '4px' }}>
+                      <Phone size={12} /> PHONE
+                    </div>
+                    <div style={{ fontWeight: '700', fontSize: '0.875rem', color: 'var(--text-main)' }}>{query.phone}</div>
+                  </div>
+                </div>
+                
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-muted)', fontSize: '0.7rem', fontWeight: '800', marginBottom: '8px' }}>
+                    <MessageSquare size={12} /> CUSTOMER MESSAGE
+                  </div>
+                  <div style={{ 
+                    padding: '1.25rem', 
+                    background: 'white', 
+                    borderRadius: '12px', 
+                    color: '#475569',
+                    fontSize: '0.9375rem',
+                    lineHeight: '1.6',
+                    border: '1px solid var(--border)',
+                    boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)',
+                    minHeight: '100px'
+                  }}>
+                    {query.message}
+                  </div>
+                </div>
+              </div>
+              
+              {query.status !== 'Read' && (
+                <button 
+                  onClick={() => updateStatus(query.id, 'Read')}
+                  style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    gap: '8px',
+                    padding: '14px', 
+                    borderRadius: '12px', 
+                    background: 'var(--primary)', 
+                    color: 'white', 
+                    border: 'none', 
+                    cursor: 'pointer',
+                    fontWeight: '800',
+                    fontSize: '0.9375rem',
+                    width: '100%',
+                    transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                    boxShadow: '0 4px 12px rgba(37, 99, 235, 0.2)'
+                  }}
+                  onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+                  onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+                >
+                  <CheckCircle size={18} />
+                  Mark as Processed
+                </button>
+              )}
+            </div>
+          ))
+        ) : (
+          <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '5rem', background: 'white', borderRadius: '24px', color: 'var(--text-muted)', border: '1px solid var(--border)' }}>
+            <MessageSquare size={48} style={{ opacity: 0.2, marginBottom: '1rem' }} />
+            <p style={{ fontSize: '1.125rem', fontWeight: '600' }}>No customer queries found</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default Queries;

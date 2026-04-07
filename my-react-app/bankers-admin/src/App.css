@@ -1,217 +1,159 @@
+/* App.css - Premium Admin Redesign */
+
 :root {
-  --primary-color: #2563eb;
-  --secondary-color: #64748b;
-  --bg-color: #f8fafc;
-  --sidebar-bg: #1e293b;
-  --card-bg: #ffffff;
-  --text-primary: #1e293b;
-  --text-secondary: #64748b;
-  --border-color: #e2e8f0;
-  --success: #10b981;
-  --warning: #f59e0b;
-  --danger: #ef4444;
-  --transition: all 0.3s ease;
+  --sidebar-width: 240px;
+  --bg-main: #f8fafc;
+  --bg-sidebar: #ffffff;
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --glass: rgba(255, 255, 255, 0.7);
+  --glass-blur: blur(12px);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-  margin: 0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Inter', 'Poppins', -apple-system, sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-main);
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: var(--bg-color);
-  color: var(--text-primary);
 }
 
-.admin-container {
-  display: flex;
-  min-height: 100vh;
-}
+/* --- Layout & Space Utilization --- */
 
-/* Sidebar Styling */
 .sidebar {
-  width: 260px;
-  background-color: var(--sidebar-bg);
-  color: #fff;
+  width: var(--sidebar-width);
+  background: var(--bg-sidebar);
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  padding: 2rem 1.5rem;
+  border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  position: fixed;
-  height: 100vh;
-  transition: var(--transition);
-  z-index: 1000;
+  z-index: 100;
+  box-shadow: 4px 0 24px rgba(0,0,0,0.02);
 }
 
-.sidebar-header {
-  padding: 2rem 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 1.25rem;
-  font-weight: 700;
-  letter-spacing: -0.025em;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.sidebar-nav {
-  flex: 1;
-  padding: 1.5rem 0.75rem;
-}
-
-.nav-link {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 0.875rem 1rem;
-  color: rgba(255, 255, 255, 0.7);
-  text-decoration: none;
-  border-radius: 8px;
-  margin-bottom: 0.5rem;
-  transition: var(--transition);
-  font-weight: 500;
-}
-
-.nav-link:hover, .nav-link.active {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #fff;
-}
-
-.nav-link.active {
-  background-color: var(--primary-color);
-}
-
-/* Main Content Styling */
 .main-content {
-  flex: 1;
-  margin-left: 260px;
-  padding: 2rem;
+  margin-left: var(--sidebar-width);
+  width: calc(100% - var(--sidebar-width)); /* Use full remaining width */
+  padding: 3rem 4rem; /* Spacious padding */
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--border-color);
-}
+/* --- Dashboard Specific --- */
 
-.page-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--text-primary);
-}
-
-/* Dashboard Cards */
-.stats-grid {
+.stat-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(4, 1fr); /* 4-column balanced layout */
   gap: 1.5rem;
+  width: 100%;
 }
 
 .stat-card {
-  background: var(--card-bg);
+  background: white;
   padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  transition: var(--transition);
+  gap: 0.75rem;
 }
 
 .stat-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary);
 }
 
 .stat-card .label {
   font-size: 0.875rem;
-  color: var(--text-secondary);
   font-weight: 600;
-  text-transform: uppercase;
+  color: var(--text-muted);
 }
 
 .stat-card .value {
   font-size: 1.875rem;
-  font-weight: 700;
-  color: var(--text-primary);
+  font-weight: 800;
+  color: var(--text-main);
 }
 
-/* Table Styling */
-.table-container {
-  background: var(--card-bg);
+/* --- Navigation --- */
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1.25rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9375rem;
   border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  overflow: hidden;
+  transition: all 0.2s ease;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-}
-
-th {
+.nav-link:hover {
   background: #f1f5f9;
-  padding: 1rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-  border-bottom: 1px solid var(--border-color);
+  color: var(--text-main);
+  transform: translateX(4px);
 }
 
-td {
-  padding: 1rem;
-  border-bottom: 1px solid var(--border-color);
-  font-size: 0.875rem;
+.nav-link.active {
+  background: #eff6ff;
+  color: var(--primary);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
 }
 
-.status-badge {
-  padding: 4px 8px;
-  border-radius: 9999px;
-  font-size: 0.75rem;
-  font-weight: 600;
+.nav-link .chevron {
+  opacity: 0;
+  transition: opacity 0.2s;
 }
 
-.status-pending { background: #fef3c7; color: #92400e; }
-.status-approved { background: #d1fae5; color: #065f46; }
-.status-rejected { background: #fee2e2; color: #991b1b; }
-.status-under_process { background: #e0f2fe; color: #075985; }
-.status-sanctioned { background: #ede9fe; color: #5b21b6; }
-.status-disbursed { background: #dcfce7; color: #166534; }
-
-/* Query Statuses */
-.status-unread { background: #fee2e2; color: #991b1b; }
-.status-in_progress { background: #e0f2fe; color: #075985; }
-.status-resolved { background: #d1fae5; color: #065f46; }
-.status-archived { background: #f1f5f9; color: #475569; }
-
-.btn {
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  transition: var(--transition);
+.nav-link:hover .chevron, 
+.nav-link.active .chevron {
+  opacity: 1;
 }
 
-.btn-primary {
-  background-color: var(--primary-color);
-  color: white;
+/* --- Responsive Layout --- */
+
+@media (max-width: 1200px) {
+  .stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
-.btn-primary:hover {
-  filter: brightness(1.1);
+@media (max-width: 1024px) {
+  .main-content {
+    padding: 2rem 1.5rem;
+  }
 }
 
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.animate-spin {
-  animation: spin 1s linear infinite;
+@media (max-width: 768px) {
+  .sidebar {
+    width: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+  }
 }
