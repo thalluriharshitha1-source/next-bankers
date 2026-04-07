@@ -10,7 +10,9 @@ const PORT = process.env.PORT || 5000;
 const DB_FILE = path.join(__dirname, 'db.json');
 const QUERIES_DB_FILE = path.join(__dirname, 'db_queries.json');
 
-app.use(cors());
+app.use(cors({
+  origin: "https://starlit-starship-33be16.netlify.app"
+}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
