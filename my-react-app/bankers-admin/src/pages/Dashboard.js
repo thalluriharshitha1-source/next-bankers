@@ -12,7 +12,7 @@ import {
   Activity
 } from 'lucide-react';
 
-const BACKEND_URL = 'http://localhost:5000/api/applications';
+const BACKEND_URL = 'https://next-bankers.onrender.com/api/applications';
 
 const Dashboard = () => {
   const [applications, setApplications] = useState([]);
