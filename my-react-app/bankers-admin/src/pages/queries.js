@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MessageSquare, CheckCircle, Search, User, Phone, Mail, Loader2 } from 'lucide-react';
 
-const BACKEND_URL = 'https://next-bankers.onrender.com/api/queries';
+const BACKEND_URL = 'http://localhost:5000/api/queries';
 
 const Queries = () => {
   const [queries, setQueries] = useState([]);
